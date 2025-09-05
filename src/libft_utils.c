@@ -6,17 +6,17 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 15:34:35 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/05 15:53:08 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:40:30 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philo.h"
 
 size_t	ft_strlen(const char *str)
 {
 	char	*cpy_str;
 
-	cpy_str = str;
+	cpy_str = (char *)str;
 	while (*cpy_str)
 		cpy_str++;
 	return (cpy_str - str);
@@ -24,30 +24,26 @@ size_t	ft_strlen(const char *str)
 
 static char	*skip_spaces(char *str)
 {
-	while (*str && (*str >= 9 && str <= 13 || *str == 32))
+	while (*str && ((*str >= 9 && *str <= 13) || *str == 32))
 		str++;
 	return (str);
 }
 
-static int	is_num(char *str)
+static int	is_num(char c)
 {
-	return (*str >= '0' && *str <= '9');
+	return (c >= '0' && c <= '9');
 }
 
-int	p_atoi(const char *arg_in_msec)
+int	p_atoi(char *str)
 {
-	char	*str;
-	int		sign;
-	int		res;
+	int			sign;
+	long long	res;
 
-	str = arg_in_msec;
 	sign = 1;
 	res = 0;
+	str = skip_spaces(str);
 	while (*str)
 	{
-		str = skip_spaces(str);
-		if (!(*str))
-			return (error_msg_exit_status("type smth apart from spaces\n", 1));
 		if (*str == '-' || *str == '+')
 		{
 			if (*str == '-')
@@ -55,10 +51,15 @@ int	p_atoi(const char *arg_in_msec)
 			str++;
 		}
 		while (*str && is_num(*str))
+		{
 			res = res * 10 + (*str - '0');
-		str++;
+			str++;
+		}
+		if (*str)
+			return (e_msg("unallowed sign detected\n", 1));
+		if (res > INT_MAX || res < INT_MIN)
+			return (e_msg("one of the vars overalps intiger limits\n", -1));
+		return (res * sign);
 	}
-	if (*str)
-		return (error_msg_exit_status("unallowed sign detected\n", 1));
-	return (res * sign);
+	return (e_msg("detected unallowed value\n", -1));
 }

@@ -6,13 +6,13 @@
 #    By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/05 13:13:52 by oishchen          #+#    #+#              #
-#    Updated: 2025/09/05 15:36:19 by oishchen         ###   ########.fr        #
+#    Updated: 2025/09/05 16:16:16 by oishchen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := philo
 
-FLAGS := -Wall -Wextra -Werror -I/include
+FLAGS := -Wall -Wextra -Werror -I.
 CC := cc
 
 SRC_DIR := src

@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_handler.c                                    :+:      :+:    :+:   */
+/*   routine_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 15:29:08 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/05 16:25:53 by oishchen         ###   ########.fr       */
+/*   Created: 2025/09/05 17:51:22 by oishchen          #+#    #+#             */
+/*   Updated: 2025/09/05 17:53:24 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	e_msg(char *msg, int exit_status)
+void	ft_sleep(ttsleep_msc)
 {
-	if (msg)
-		write(STDERR_FILENO, msg, ft_strlen(msg));
-	return (exit_status);
+	usleep(ttsleep_msc * 1000);
 }
