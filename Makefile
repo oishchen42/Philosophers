@@ -6,7 +6,7 @@
 #    By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/05 13:13:52 by oishchen          #+#    #+#              #
-#    Updated: 2025/09/05 16:16:16 by oishchen         ###   ########.fr        #
+#    Updated: 2025/09/06 14:18:14 by oishchen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,9 @@ CC := cc
 SRC_DIR := src
 OBJ_DIR := obj
 
-SRC_FILES := main.c libft_utils.c error_handler.c
+SRC_FILES := main.c libft_utils.c error_handler.c \
+			start_threads.c routines.c cleanups.c \
+			init_data.c routine_utils.c 
 OBJ_FILES := $(SRC_FILES:.c=.o)
 
 SRC := $(addprefix $(SRC_DIR)/, $(SRC_FILES))
