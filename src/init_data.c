@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:08:34 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/06 21:42:27 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 10:12:27 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,18 @@ static int	init_data_ints(t_philo_struct *data, int ac, char **av)
 	data->eat_needed = INT_MAX;
 	data->eat_did = 0;
 	data->ph_n = p_atoi(av[1]);
+	printf("%d number of philos\n", data->ph_n);
 	data->ttdie_msec = p_atoi(av[2]);
+	printf("%d time to die in msec\n", data->ttdie_msec);
 	data->tteat_msec = p_atoi(av[3]);
+	printf("%d time to eat in msec\n", data->tteat_msec);
 	data->ttsleep_msec = p_atoi(av[4]);
+	printf("%d time ot sleep in msec\n", data->ttsleep_msec);
 	if (ac == 6)
 		data->eat_needed = p_atoi(av[5]);
 	if (data->ph_n < 0 || data->ttdie_msec < 0 || data->tteat_msec < 0
 		|| data->eat_needed < 0 || data->ttsleep_msec < 0)
-		return (e_msg("No negative value allowed\n", 0));
+		return (0);
 	return (1);
 }
 
@@ -45,14 +49,17 @@ static int	init_data_mallocs_forks(t_philo_struct *data)
 	while (++i < data->ph_n)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) == -1)
-			return (clean_mallocs_forks(data, i, 0, 0), e_msg("pthrd_mutex init failed\n", 0));
+			return (clean_mallocs_forks(data, i), e_msg("pthrd_mutex init failed\n", 0));
 	}
 	data->is_forks_ready = 1;
-	if (pthread_mutex_init(data->msg_mutex, NULL) == -1)
-		return (clean_mallocs_forks(data, data->ph_n, 1, 0), e_msg("pthrd_mutex init failed\n", 0));
+	if (pthread_mutex_init(&data->msg_mutex, NULL) == -1)
+		return (clean_mallocs_forks(data, data->ph_n), e_msg("pthrd_mutex init failed\n", 0));
 	data->is_msg_mutex_ready = 1;
-	if(pthread_mutex_init(data->odd_mutex, NULL) == -1)
-		return (clean_mallocs_forks(data, data->ph_n, 1, 1), e_msg("pthrd_mutex init failed\n", 0));
+	if(pthread_mutex_init(&data->odd_mutex, NULL) == -1)
+		return (clean_mallocs_forks(data, data->ph_n), e_msg("pthrd_mutex init failed\n", 0));
+	data->is_odd_mtx_ready = 1;
+	printf("all inits were finished\n");
+	return (1);
 }
 
 static int	assign_forks(t_philo_struct *data)
@@ -81,25 +88,31 @@ static void	init_philos_ints(t_philo_struct *data)
 	int	i;
 	int	is_odd;
 
-	if (data->ph_n % 2 == 0)
-		is_odd = 0;
-	else
-		is_odd = 1;
+	//printf("data->ph_n: %d\n", data->ph_n);
+	//printf("data->ph_n %% 2 is: %d\n", data->ph_n % 2 );
+	is_odd = (data->ph_n % 2 == 1);
+	//printf("is odd %d\n", is_odd);
 	i = -1;
 	while (++i < data->ph_n)
 	{
+		data->philos[i].data = data;
 		data->philos[i].eat_did = 0;
 		data->philos[i].tteat = data->tteat_msec;
 		data->philos[i].ttsleep = data->ttsleep_msec;
 		data->philos[i].ttdie = data->ttdie_msec;
 		data->philos[i].eat_needed = data->eat_needed;
 		data->philos[i].id = i + 1;
-		data->philos[i].is_wait = 0;
+		data->philos[i].is_wait = (i % 2 == 1);
 		data->philos[i].is_dead = 0;
 		data->philos[i].is_odd = is_odd;
+		data->philos[i].ph_max = data->ph_n;
+		data->philos[i].tlast_meal = 0; // b_evo delete
 	}
 	if (is_odd)
+	{
+		printf("philo %d, is wait == 1\n", data->philos[i - 1].id);
 		data->philos[i - 1].is_wait = 1;
+	}
 	data->odd_flg = LAST_PHILO;
 }
 
@@ -107,7 +120,7 @@ static void	init_philos_ints(t_philo_struct *data)
 int	init_data(t_philo_struct *data, int ac, char **av)
 {
 	if (!(ac == 6 || ac == 5))
-		return (e_msg("expected from 4 to 5 variables\n", 1));
+		return (e_msg("expected from 4 to 5 variables\n", 0));
 	if (!init_data_ints(data, ac, av))
 		return (0);
 	if (!init_data_mallocs_forks(data))

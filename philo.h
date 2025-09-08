@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/06 22:01:50 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/07 18:57:07 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ typedef struct s_philo_struct	t_philo_struct;
 
 typedef struct	s_philo
 {
-	pthread_mutex_t	*fork_1;
+	pthread_mutex_t	*fork_1; //
 	pthread_mutex_t	*fork_2;
-	pthread_t		*thrd;
+	pthread_t		thrd;
 	int				id;
 	int				eat_did;
 	int				tteat;
@@ -39,13 +39,16 @@ typedef struct	s_philo
 	int				is_wait;
 	int				is_dead;
 	int				is_odd;
+	int				ph_max;
+	int				tlast_meal;
+	int				tmeal;
+	long			start_time;
 	t_philo_struct	*data;
 }	t_philo;
 
 typedef struct	s_philo_struct
 {
-	size_t			start_time;
-	int				ph_id; // b_evo do we need it?
+	long			start_time;
 	int				ph_n;
 	int				ttdie_msec;// b_evo do we need it?
 	int				tteat_msec;// b_evo do we need it?
@@ -54,12 +57,12 @@ typedef struct	s_philo_struct
 	int				eat_did;// b_evo do we need it?
 	int				odd_flg;// b_evo do we need it?
 	t_philo			*philos;
-	pthread_t		*death_tracer;
-	pthread_mutex_t	*odd_mutex;
+	pthread_t		death_tracer;
+	pthread_mutex_t	odd_mutex;
 	int				is_odd_mtx_ready;
 	pthread_mutex_t	*forks;
 	int				is_forks_ready;
-	pthread_mutex_t	*msg_mutex;
+	pthread_mutex_t	msg_mutex;
 	int				is_msg_mutex_ready;
 }	t_philo_struct;
 
@@ -71,7 +74,9 @@ typedef struct	s_philo_struct
 int		init_data(t_philo_struct *data, int ac, char **av);
 
 //cleanups
-void	clean_mallocs_forks(t_philo_struct *data, int fork_pos, int is_mtx_msg, int is_mtx_odd);
+void	clean_mallocs_forks(t_philo_struct *data, int fork_pos);
+void	clean_threads(t_philo_struct *data, int pos);
+void	clean_data(t_philo_struct *data);
 
 //libft_utils
 size_t	ft_strlen(const char *str);
@@ -81,13 +86,11 @@ int		p_atoi(char *str);
 int		e_msg(char *msg, int exit_status);
 
 // routine_utils
-size_t	get_time(void);
-void	calculate_wait(t_philo *philo);
-void	ft_sleep(ttsleep_msc);
-int		print_thrd_msg(t_philo_struct *data, int philo_id, char *msg);
+long	get_time(void);
+int		print_thrd_msg(t_philo *philo, char *msg);
 
 // routines
-int		philo_sleep(int ttsleep_msec, int start_time, int ph_id);
+int		philo_sleep(t_philo *philo);
 int		philo_eat_think(t_philo *philo);
 
 // starting program

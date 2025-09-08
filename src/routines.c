@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 17:32:48 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/06 22:02:58 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 09:44:42 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,58 @@
 
 int	philo_sleep(t_philo *philo)
 {
-	size_t	cur_time;
+	long	cur_time;
 
+	pthread_mutex_lock(&philo->data->msg_mutex);
 	cur_time = get_time();
 	if (cur_time == -1)
 		return (0);
-	printf("%d %d is sleeping\n", start_time - cur_time, ph_id);
-	ft_sleep(ttsleep_msec);
+	printf("%ld %d is sleeping\n", cur_time - philo->start_time, philo->id);
+	pthread_mutex_unlock(&philo->data->msg_mutex);
+	usleep(philo->ttsleep * 1000);
+	return (1);
+}
+
+int	is_alive(t_philo *philo)
+{
+	philo->tmeal = get_time();
+	if (philo->tmeal == -1)
+		return (e_msg("is_alive get_time failed\n", 0));
+	if (philo->eat_did == 0)
+		philo->tlast_meal = philo->start_time;
+	//pthread_mutex_lock(&philo->data->msg_mutex);
+	//printf("%d > %d is time of the uppcoming meal - time of the last meal\n", philo->tmeal - philo->tlast_meal, philo->ttdie);
+	//pthread_mutex_unlock(&philo->data->msg_mutex);
+	return (philo->tmeal - philo->tlast_meal < philo->ttdie);
 }
 
 int	philo_eat_think(t_philo *philo)
 {
-	if (!print_thrd_msg(philo->data, philo->id, "is thinking"))
+	//pthread_mutex_lock(&philo->data->msg_mutex);
+	//printf("%d is inside philo_eat_think\n", philo->id);
+	//pthread_mutex_unlock(&philo->data->msg_mutex);
+	if (!print_thrd_msg(philo, "is thinking"))
 		return (0);
 	pthread_mutex_lock(philo->fork_1);
-	if (!print_thrd_msg(philo->data, philo->id, "has taken a fork"))
+	if (!print_thrd_msg(philo, "has taken a fork"))
 		return (0);
 	pthread_mutex_lock(philo->fork_2);
-	if (!print_thrd_msg(philo->data, philo->id, "has taken a fork"))
+	if (!print_thrd_msg(philo, "has taken a fork"))
 		return (0);
-	if (!print_thrd_msg(philo->data, philo->id, "is eating"))
-		return (0);
-	ft_sleep(philo->data->tteat_msec, philo->data->start_time, philo->id);
+	if (is_alive(philo))
+	{
+		if (!print_thrd_msg(philo, "is eating"))
+			return (0);
+		usleep(philo->tteat * 1000);
+		philo->tlast_meal = get_time();
+		if (philo->tlast_meal == -1)
+			return (e_msg("get_time() failed\n", 0));
+	}
+	else
+	{
+		philo->is_dead = 1;
+		print_thrd_msg(philo, "id_dead");
+	}
 	pthread_mutex_unlock(philo->fork_2);
 	pthread_mutex_unlock(philo->fork_1);
 	return (1);

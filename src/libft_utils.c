@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 15:34:35 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/05 16:40:30 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 10:02:41 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static int	is_num(char c)
 
 int	p_atoi(char *str)
 {
-	int			sign;
-	long long	res;
+	int		sign;
+	long	res;
 
 	sign = 1;
 	res = 0;
@@ -58,8 +58,9 @@ int	p_atoi(char *str)
 		if (*str)
 			return (e_msg("unallowed sign detected\n", 1));
 		if (res > INT_MAX || res < INT_MIN)
-			return (e_msg("one of the vars overalps intiger limits\n", -1));
-		return (res * sign);
+			//return (e_msg("one of the vars overalps intiger limits\n", -1));
+		printf("our res is %ld\n", res);
+		return ((int)res * sign);
 	}
 	return (e_msg("detected unallowed value\n", -1));
 }
