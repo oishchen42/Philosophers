@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:37:20 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 10:50:41 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:18:44 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	init_wait(t_philo *philo)
 	cur_time = get_time();
 	if (cur_time == -1)
 		return (e_msg("gettime has failed\n", 0));
-	print_thrd_msg(philo, "is sleeping");
+	print_thrd_msg(philo, "is thinking");
 	usleep(philo->tteat * 1000);
 	return (1);
 }
@@ -31,6 +31,7 @@ int	is_odd_suspension(t_philo *philo, int is_change_falg)
 		pthread_mutex_lock(&philo->data->odd_mutex);
 		if (philo->data->odd_flg == LAST_PHILO && philo->id == philo->ph_max)
 		{
+			print_thrd_msg(philo, "inside is_odd_supp logic");
 			if (is_change_falg)
 				philo->data->odd_flg = FIRST_PHILO;
 			pthread_mutex_unlock(&philo->data->odd_mutex);
@@ -43,8 +44,8 @@ int	is_odd_suspension(t_philo *philo, int is_change_falg)
 			pthread_mutex_unlock(&philo->data->odd_mutex);
 			return (1);
 		}
-		pthread_mutex_unlock(&philo->data->odd_mutex);
 	}
+	pthread_mutex_unlock(&philo->data->odd_mutex);
 	return (0);
 }
 
@@ -54,17 +55,26 @@ void	is_enough_time_for_meal(t_philo *philo)
 	int	time_till_food;
 
 	factor = 0;
-	if (philo->eat_did > 0)
+	if (philo->eat_did > 0 && philo->is_odd)
 		factor += is_odd_suspension(philo, 0);
-	else
-		factor += philo->is_wait;
-	time_till_food = philo->ttdie - (philo->ttsleep * factor);
-	if (time_till_food <= 0)
+	factor += philo->is_wait;
+	time_till_food = philo->ttdie - (philo->tteat + (philo->ttsleep * factor));
+	if (time_till_food <= 0 || philo->ph_max == 1)
 	{
 		usleep(philo->ttdie * 1000);
 		print_thrd_msg(philo, "is died");
-		philo->is_dead = 1;
+		massacre(philo);
 	}
+}
+
+int	is_dead_flg_raised(t_philo *philo)
+{
+	int	res;
+
+	pthread_mutex_lock(&philo->data->finished_mutex);
+	res = philo->is_dead;
+	pthread_mutex_unlock(&philo->data->finished_mutex);
+	return (res);
 }
 
 void	*simple_routine(void *args)
@@ -73,14 +83,10 @@ void	*simple_routine(void *args)
 
 	philo = (t_philo *)args;
 	is_enough_time_for_meal(philo);
-	printf("philo %d, philo->is_wait %d\n", philo->id, philo->is_wait);
-	while(philo->eat_did < philo->eat_needed && !philo->is_dead)
+	while(philo->eat_did < philo->eat_needed && !is_dead_flg_raised(philo))
 	{
-		//pthread_mutex_lock(&philo->data->msg_mutex);
-		//printf("%d philo has started his job\n", philo->id);
-		//pthread_mutex_unlock(&philo->data->msg_mutex);
-		if (is_odd_suspension(philo, 1))
-			philo_sleep(philo); // b_evo try to check by moivng it out of the while borders
+		if (philo->is_odd && is_odd_suspension(philo, 1))
+			philo_sleep(philo);
 		if (philo->is_wait)
 		{
 			philo->is_wait = 0;
@@ -95,28 +101,22 @@ void	*simple_routine(void *args)
 		philo->eat_did++;
 	}
 	pthread_mutex_lock(&philo->data->msg_mutex);
-	printf("%d philo has FINISHED his job\n", philo->id);
+	printf("%d meals were taken\n", philo->eat_did);
 	pthread_mutex_unlock(&philo->data->msg_mutex);
 	return (NULL);
 }
-
-
 
 int	start_prog(t_philo_struct *data)
 {
 	int	i;
 
 	data->start_time = get_time();
-	printf("%lu the program has began\n", data->start_time); // delete
 	i = -1;
 	while (++i < data->ph_n)
 	{
 		data->philos[i].start_time = data->start_time;
 		if (pthread_create(&data->philos[i].thrd, NULL, simple_routine, &data->philos[i]) == -1)
-			return (clean_threads(data, i), e_msg("pthread_create failed\n", 0));
-		//pthread_mutex_lock(&data->msg_mutex);
-		//printf("%d circle is finished\n", i);
-		//pthread_mutex_unlock(&data->msg_mutex);
+			return (clean_data(data, i), e_msg("pthread_create failed\n", 0));
 	}
 	return (1);
 }

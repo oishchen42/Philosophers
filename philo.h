@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/07 18:57:07 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:19:23 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,11 @@
 # include <limits.h>
 #include <sys/time.h>
 
-# define E_FAIL 1
-# define E_SUCCESS 0
-
 typedef struct s_philo_struct	t_philo_struct;
 
 typedef struct	s_philo
 {
-	pthread_mutex_t	*fork_1; //
+	pthread_mutex_t	*fork_1;
 	pthread_mutex_t	*fork_2;
 	pthread_t		thrd;
 	int				id;
@@ -50,14 +47,15 @@ typedef struct	s_philo_struct
 {
 	long			start_time;
 	int				ph_n;
-	int				ttdie_msec;// b_evo do we need it?
-	int				tteat_msec;// b_evo do we need it?
-	int				ttsleep_msec;// b_evo do we need it?
-	int				eat_needed;// b_evo do we need it?
-	int				eat_did;// b_evo do we need it?
-	int				odd_flg;// b_evo do we need it?
+	int				ttdie_msec;
+	int				tteat_msec;
+	int				ttsleep_msec;
+	int				eat_needed;
+	int				eat_did;
+	int				odd_flg;
 	t_philo			*philos;
-	pthread_t		death_tracer;
+	pthread_mutex_t	finished_mutex;
+	int				is_finished_mtx_ready;
 	pthread_mutex_t	odd_mutex;
 	int				is_odd_mtx_ready;
 	pthread_mutex_t	*forks;
@@ -66,17 +64,17 @@ typedef struct	s_philo_struct
 	int				is_msg_mutex_ready;
 }	t_philo_struct;
 
-# define ODD_GLITCH 5
 # define FIRST_PHILO 1
 # define LAST_PHILO 0
+# define ALARM_TIME 10
 
 // init_data
 int		init_data(t_philo_struct *data, int ac, char **av);
 
 //cleanups
-void	clean_mallocs_forks(t_philo_struct *data, int fork_pos);
-void	clean_threads(t_philo_struct *data, int pos);
-void	clean_data(t_philo_struct *data);
+void	clean_mallocs_mutexes(t_philo_struct *data);
+void	destroy_forks(t_philo_struct *data, int fork_pos);
+void	clean_data(t_philo_struct *data, int pos);
 
 //libft_utils
 size_t	ft_strlen(const char *str);
@@ -86,6 +84,8 @@ int		p_atoi(char *str);
 int		e_msg(char *msg, int exit_status);
 
 // routine_utils
+void	massacre(t_philo *philo);
+int		is_dead_flg_raised(t_philo *philo);
 long	get_time(void);
 int		print_thrd_msg(t_philo *philo, char *msg);
 
