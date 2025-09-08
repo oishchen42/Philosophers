@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:37:20 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 19:51:46 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:58:04 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static int	is_odd_suspension(t_philo *philo, int is_change_falg)
 		pthread_mutex_lock(&philo->data->odd_mutex);
 		if (philo->data->odd_flg == LAST_PHILO && philo->id == philo->ph_max)
 		{
-			print_thrd_msg(philo, "inside is_odd_supp logic");
 			if (is_change_falg)
 				philo->data->odd_flg = FIRST_PHILO;
 			pthread_mutex_unlock(&philo->data->odd_mutex);
