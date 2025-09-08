@@ -6,13 +6,13 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:59:49 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 18:19:14 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:48:55 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
- void	clean_mallocs_mutexes(t_philo_struct *data)
+void	clean_mallocs_mutexes(t_philo_struct *data)
 {
 	if (data->philos)
 		free(data->philos);
@@ -49,4 +49,3 @@ void	clean_data(t_philo_struct *data, int pos)
 	}
 	destroy_forks(data, data->ph_n);
 }
-

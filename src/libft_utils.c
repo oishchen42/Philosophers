@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 15:34:35 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 15:01:48 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:48:17 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,8 @@ static int	is_num(char c)
 
 int	p_atoi(char *str)
 {
-	int		sign;
 	long	res;
 
-	sign = 1;
 	res = 0;
 	str = skip_spaces(str);
 	while (*str)
@@ -47,7 +45,7 @@ int	p_atoi(char *str)
 		if (*str == '-' || *str == '+')
 		{
 			if (*str == '-')
-				sign = -1;
+				return (-1);
 			str++;
 		}
 		while (*str && is_num(*str))
@@ -56,10 +54,11 @@ int	p_atoi(char *str)
 			str++;
 		}
 		if (*str)
-			return (e_msg("unallowed sign detected\n", 1));
+			return (non_thrd_er("unallowed sign detected\n", 1));
 		if (res > INT_MAX || res < INT_MIN)
-			return (e_msg("one of the vars overalps intiger limits\n", -1));
-		return ((int)res * sign);
+			return (non_thrd_er("one of the vars overalps intiger limits\n",
+					-1));
+		return ((int)res);
 	}
-	return (e_msg("detected unallowed value\n", -1));
+	return (non_thrd_er("detected unallowed value\n", -1));
 }

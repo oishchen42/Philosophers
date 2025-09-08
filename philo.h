@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 18:19:23 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:47:38 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <limits.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
 typedef struct s_philo_struct	t_philo_struct;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	pthread_mutex_t	*fork_1;
 	pthread_mutex_t	*fork_2;
@@ -43,7 +43,7 @@ typedef struct	s_philo
 	t_philo_struct	*data;
 }	t_philo;
 
-typedef struct	s_philo_struct
+typedef struct s_philo_struct
 {
 	long			start_time;
 	int				ph_n;
@@ -55,6 +55,7 @@ typedef struct	s_philo_struct
 	int				odd_flg;
 	t_philo			*philos;
 	pthread_mutex_t	finished_mutex;
+	int				is_stop_exec;
 	int				is_finished_mtx_ready;
 	pthread_mutex_t	odd_mutex;
 	int				is_odd_mtx_ready;
@@ -81,17 +82,19 @@ size_t	ft_strlen(const char *str);
 int		p_atoi(char *str);
 
 // error_handler
-int		e_msg(char *msg, int exit_status);
+int		e_msg(t_philo *philo, char *msg, int exit_status);
+int		non_thrd_er(char *msg, int exit_status);
 
 // routine_utils
 void	massacre(t_philo *philo);
+int		is_alive(t_philo *philo);
 int		is_dead_flg_raised(t_philo *philo);
 long	get_time(void);
 int		print_thrd_msg(t_philo *philo, char *msg);
 
 // routines
-int		philo_sleep(t_philo *philo);
-int		philo_eat_think(t_philo *philo);
+void	philo_sleep(t_philo *philo);
+void	philo_eat_think(t_philo *philo);
 
 // starting program
 int		start_prog(t_philo_struct *data);

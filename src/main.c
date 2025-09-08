@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 13:14:50 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 18:19:58 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:43:51 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	main(int ac, char **av)
 	t_philo_struct	data;
 
 	if (write(STDIN_FILENO, "", 0) == -1)
-		return (e_msg("STDIN_FILENO is closed", 1));
+		return (non_thrd_er("STDIN_FILENO is closed", 1));
 	if (write(STDERR_FILENO, "", 0) == -1)
-		return (e_msg("STDERR_FILENO is closed", 1));
+		return (non_thrd_er("STDERR_FILENO is closed", 1));
 	if (!init_data(&data, ac, av))
 		return (1);
 	if (!start_prog(&data))
