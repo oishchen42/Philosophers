@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 19:55:18 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:53:24 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ typedef struct s_philo_struct
 	pthread_mutex_t	finished_mutex;
 	int				is_stop_exec;
 	int				is_finished_mtx_ready;
-	pthread_mutex_t	odd_mutex;
-	int				is_odd_mtx_ready;
 	pthread_mutex_t	*forks;
 	int				is_forks_ready;
 	pthread_mutex_t	msg_mutex;

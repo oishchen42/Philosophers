@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 15:34:35 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 19:48:17 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:14:19 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	p_atoi(char *str)
 			str++;
 		}
 		if (*str)
-			return (non_thrd_er("unallowed sign detected\n", 1));
+			return (non_thrd_er("unallowed sign detected\n", -1));
 		if (res > INT_MAX || res < INT_MIN)
 			return (non_thrd_er("one of the vars overalps intiger limits\n",
 					-1));

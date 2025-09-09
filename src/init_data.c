@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:08:34 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 19:50:51 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:56:16 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static int	init_data_ints(t_philo_struct *data, int ac, char **av)
 	data->is_stop_exec = 0;
 	data->is_forks_ready = 0;
 	data->is_msg_mutex_ready = 0;
-	data->is_odd_mtx_ready = 0;
 	data->eat_needed = INT_MAX;
 	data->eat_did = 0;
 	data->ph_n = p_atoi(av[1]);
@@ -52,9 +51,6 @@ static int	init_data_mallocs_forks(t_philo_struct *data)
 	if (pthread_mutex_init(&data->msg_mutex, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
 	data->is_msg_mutex_ready = 1;
-	if (pthread_mutex_init(&data->odd_mutex, NULL) == -1)
-		return (destroy_forks(data, data->ph_n), 0);
-	data->is_odd_mtx_ready = 1;
 	if (pthread_mutex_init(&data->finished_mutex, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
 	data->is_finished_mtx_ready = 1;

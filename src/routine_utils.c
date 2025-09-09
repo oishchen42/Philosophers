@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 17:51:22 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/08 19:48:35 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:27:41 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@ int	print_thrd_msg(t_philo *philo, char *msg)
 {
 	long	cur_time;
 
-	pthread_mutex_lock(&philo->data->msg_mutex);
 	cur_time = get_time();
-	if (cur_time == -1)
-		return (pthread_mutex_unlock(&philo->data->msg_mutex),
-			e_msg(philo, "gettime has failed\n", 0));
+	pthread_mutex_lock(&philo->data->msg_mutex);
 	printf("%ld %d %s\n", cur_time - philo->start_time, philo->id, msg);
 	pthread_mutex_unlock(&philo->data->msg_mutex);
 	return (1);
