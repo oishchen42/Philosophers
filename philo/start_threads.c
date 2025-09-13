@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:37:20 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/13 15:23:55 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:55:56 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void	is_enough_time_for_meal(t_philo *philo)
 	if (philo->id == philo->ph_max && philo->is_odd)
 		factor += 1;
 	factor += philo->is_wait;
-	if (philo->ttsleep <= philo->tteat || philo->tteat < ALARM_TIME)
+	if ((philo->ttsleep <= philo->tteat && philo->is_odd)
+		|| philo->tteat < ALARM_TIME)
 		tt_food = philo->ttdie - (philo->tteat + philo->ttsleep + ALARM_TIME);
 	else
 		tt_food = philo->ttdie - (philo->tteat * factor);
