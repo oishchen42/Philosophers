@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/09 18:53:24 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:07:12 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef struct s_philo
 	int				ttsleep;
 	int				eat_needed;
 	int				is_wait;
-	int				is_dead;
+	int				round;
 	int				is_odd;
 	int				ph_max;
 	int				tlast_meal;
@@ -56,11 +56,15 @@ typedef struct s_philo_struct
 	t_philo			*philos;
 	pthread_mutex_t	finished_mutex;
 	int				is_stop_exec;
+	int				is_all_ready;
 	int				is_finished_mtx_ready;
 	pthread_mutex_t	*forks;
 	int				is_forks_ready;
 	pthread_mutex_t	msg_mutex;
 	int				is_msg_mutex_ready;
+	pthread_mutex_t	suspension_mutex;
+	int				is_suspension_mtx_ready;
+	int				is_death_anounced;
 }	t_philo_struct;
 
 # define FIRST_PHILO 1
@@ -84,11 +88,13 @@ int		e_msg(t_philo *philo, char *msg, int exit_status);
 int		non_thrd_er(char *msg, int exit_status);
 
 // routine_utils
+void	switch_is_odd_flg(t_philo *philo);
 void	massacre(t_philo *philo);
 int		is_alive(t_philo *philo);
 int		is_dead_flg_raised(t_philo *philo);
 long	get_time(void);
-int		print_thrd_msg(t_philo *philo, char *msg);
+int		print_thrd_msg(t_philo *philo, char *msg, int is_urgent);
+int		is_odd_suspension(t_philo *philo);
 
 // routines
 void	philo_sleep(t_philo *philo);

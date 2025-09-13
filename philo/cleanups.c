@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:59:49 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/09 18:54:05 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:20:01 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,11 @@ void	clean_mallocs_mutexes(t_philo_struct *data)
 		pthread_mutex_destroy(&data->msg_mutex);
 	if (data->is_finished_mtx_ready)
 		pthread_mutex_destroy(&data->finished_mutex);
+	if (data->is_suspension_mtx_ready)
+		pthread_mutex_destroy(&data->suspension_mutex);
 	data->is_finished_mtx_ready = 0;
 	data->is_msg_mutex_ready = 0;
+	data->is_suspension_mtx_ready = 0;
 }
 
 void	destroy_forks(t_philo_struct *data, int fork_pos)

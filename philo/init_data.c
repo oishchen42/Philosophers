@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:08:34 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/09 18:56:16 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:07:01 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static int	init_data_ints(t_philo_struct *data, int ac, char **av)
 {
+	data->is_death_anounced = 0;
+	data->is_all_ready = 0;
 	data->is_stop_exec = 0;
 	data->is_forks_ready = 0;
 	data->is_msg_mutex_ready = 0;
@@ -54,6 +56,9 @@ static int	init_data_mallocs_forks(t_philo_struct *data)
 	if (pthread_mutex_init(&data->finished_mutex, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
 	data->is_finished_mtx_ready = 1;
+	if (pthread_mutex_init(&data->suspension_mutex, NULL) == -1)
+		return (destroy_forks(data, data->ph_n), 0);
+	data->is_suspension_mtx_ready = 1;
 	return (1);
 }
 
@@ -95,13 +100,13 @@ static void	init_philos_ints(t_philo_struct *data)
 		data->philos[i].eat_needed = data->eat_needed;
 		data->philos[i].id = i + 1;
 		data->philos[i].is_wait = (i % 2 == 1);
-		data->philos[i].is_dead = 0;
 		data->philos[i].is_odd = is_odd;
 		data->philos[i].ph_max = data->ph_n;
+		data->philos[i].round = 1;
 	}
 	if (is_odd)
 		data->philos[i - 1].is_wait = 1;
-	data->odd_flg = LAST_PHILO;
+	data->odd_flg = FIRST_PHILO;
 }
 
 int	init_data(t_philo_struct *data, int ac, char **av)
