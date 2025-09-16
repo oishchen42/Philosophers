@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 17:51:22 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/16 18:47:55 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 20:08:35 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ int	print_thrd_msg(t_philo *philo, char *msg, int is_urgent)
 	return (1);
 }
 
-int	is_prog_finished(t_philo *philo)
+int	is_prog_finished(t_philo_struct *data)
 {
 	int	res;
 
-	pthread_mutex_lock(&philo->data->mutex_prog_finish);
-	res = philo->data->is_prog_finish;
-	pthread_mutex_unlock(&philo->data->mutex_prog_finish);
+	pthread_mutex_lock(&data->mutex_prog_finish);
+	res = data->is_prog_finish;
+	pthread_mutex_unlock(&data->mutex_prog_finish);
 	return (res);
 }
 

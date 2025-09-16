@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/16 18:48:17 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 20:11:25 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int		is_all_ate_or_finish(t_philo_struct *data);
 int		anounce_death_stop_prog(t_philo_struct *data, int philo);
 void	ft_sleep(int time_to_sleep);
 void	switch_is_odd_flg(t_philo *philo);
-int		is_prog_finished(t_philo *philo);
+int		is_prog_finished(t_philo_struct *data);
 long	get_time(void);
 int		print_thrd_msg(t_philo *philo, char *msg, int is_urgent);
 int		is_odd_suspension(t_philo *philo);
