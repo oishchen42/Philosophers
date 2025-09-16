@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:50:17 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/13 15:07:12 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:48:17 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_philo
 	int				round;
 	int				is_odd;
 	int				ph_max;
-	int				tlast_meal;
+	long			tlast_meal;
 	int				tmeal;
 	long			start_time;
 	t_philo_struct	*data;
@@ -54,16 +54,21 @@ typedef struct s_philo_struct
 	int				eat_did;
 	int				odd_flg;
 	t_philo			*philos;
-	pthread_mutex_t	finished_mutex;
-	int				is_stop_exec;
-	int				is_all_ready;
-	int				is_finished_mtx_ready;
+	pthread_t		death_tracer;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	mutex_lmeal;
+	pthread_mutex_t	mutex_msg;
+	pthread_mutex_t	mutex_prog_finish;
+	pthread_mutex_t	mutex_lmsg;
+	pthread_mutex_t	mutex_data;
+	int				ready_mtx_data;
+	int				ready_mtx_lmsg;
+	int				ready_mtx_prog_finish;
+	int				ready_mtx_msg;
+	int				ready_mtx_lmeal;
+	int				is_thrd_tracer;
 	int				is_forks_ready;
-	pthread_mutex_t	msg_mutex;
-	int				is_msg_mutex_ready;
-	pthread_mutex_t	suspension_mutex;
-	int				is_suspension_mtx_ready;
+	int				is_prog_finish;
 	int				is_death_anounced;
 }	t_philo_struct;
 
@@ -86,12 +91,13 @@ int		p_atoi(char *str);
 // error_handler
 int		e_msg(t_philo *philo, char *msg, int exit_status);
 int		non_thrd_er(char *msg, int exit_status);
+int		is_all_ate_or_finish(t_philo_struct *data);
 
 // routine_utils
+int		anounce_death_stop_prog(t_philo_struct *data, int philo);
+void	ft_sleep(int time_to_sleep);
 void	switch_is_odd_flg(t_philo *philo);
-void	massacre(t_philo *philo);
-int		is_alive(t_philo *philo);
-int		is_dead_flg_raised(t_philo *philo);
+int		is_prog_finished(t_philo *philo);
 long	get_time(void);
 int		print_thrd_msg(t_philo *philo, char *msg, int is_urgent);
 int		is_odd_suspension(t_philo *philo);

@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:08:34 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/13 15:07:01 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:18:17 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 static int	init_data_ints(t_philo_struct *data, int ac, char **av)
 {
 	data->is_death_anounced = 0;
-	data->is_all_ready = 0;
-	data->is_stop_exec = 0;
+	data->is_thrd_tracer = 0;
+	data->is_prog_finish = 0;
+	data->ready_mtx_lmeal = 0;
+	data->ready_mtx_lmsg = 0;
 	data->is_forks_ready = 0;
-	data->is_msg_mutex_ready = 0;
+	data->ready_mtx_msg = 0;
+	data->ready_mtx_prog_finish = 0;
 	data->eat_needed = INT_MAX;
 	data->eat_did = 0;
 	data->ph_n = p_atoi(av[1]);
@@ -50,15 +53,25 @@ static int	init_data_mallocs_forks(t_philo_struct *data)
 			return (destroy_forks(data, i), 0);
 	}
 	data->is_forks_ready = 1;
-	if (pthread_mutex_init(&data->msg_mutex, NULL) == -1)
+	return (1);
+}
+int	init_other_mtxs(t_philo_struct *data)
+{
+	if (pthread_mutex_init(&data->mutex_data, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
-	data->is_msg_mutex_ready = 1;
-	if (pthread_mutex_init(&data->finished_mutex, NULL) == -1)
+	data->ready_mtx_data = 1;
+	if (pthread_mutex_init(&data->mutex_lmeal, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
-	data->is_finished_mtx_ready = 1;
-	if (pthread_mutex_init(&data->suspension_mutex, NULL) == -1)
+	data->ready_mtx_lmeal = 1;
+	if (pthread_mutex_init(&data->mutex_msg, NULL) == -1)
 		return (destroy_forks(data, data->ph_n), 0);
-	data->is_suspension_mtx_ready = 1;
+	data->ready_mtx_msg = 1;
+	if (pthread_mutex_init(&data->mutex_prog_finish, NULL) == -1)
+		return (destroy_forks(data, data->ph_n), 0);
+	data->ready_mtx_prog_finish = 1;
+	if (pthread_mutex_init(&data->mutex_lmsg, NULL) == -1)
+		return (destroy_forks(data, data->ph_n), 0);
+	data->ready_mtx_lmsg = 1;
 	return (1);
 }
 
@@ -115,9 +128,9 @@ int	init_data(t_philo_struct *data, int ac, char **av)
 		return (non_thrd_er("expected from 4 to 5 variables\n", 0));
 	if (!init_data_ints(data, ac, av))
 		return (non_thrd_er("no negative values pls\n", 0));
-	if (!init_data_mallocs_forks(data))
+	if (!init_data_mallocs_forks(data) || !init_other_mtxs(data))
 		return (non_thrd_er("init_data_mallocs_forks failed\n", 0));
-	assign_forks(data);
 	init_philos_ints(data);
+	assign_forks(data);
 	return (1);
 }

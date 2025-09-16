@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:59:49 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/13 15:20:01 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:25:32 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,21 @@ void	clean_mallocs_mutexes(t_philo_struct *data)
 		free(data->philos);
 	if (data->forks)
 		free(data->forks);
-	if (data->is_msg_mutex_ready)
-		pthread_mutex_destroy(&data->msg_mutex);
-	if (data->is_finished_mtx_ready)
-		pthread_mutex_destroy(&data->finished_mutex);
-	if (data->is_suspension_mtx_ready)
-		pthread_mutex_destroy(&data->suspension_mutex);
-	data->is_finished_mtx_ready = 0;
-	data->is_msg_mutex_ready = 0;
-	data->is_suspension_mtx_ready = 0;
+	if (data->ready_mtx_data)
+		pthread_mutex_destroy(&data->mutex_data);
+	if (data->ready_mtx_msg)
+		pthread_mutex_destroy(&data->mutex_msg);
+	if (data->ready_mtx_prog_finish)
+		pthread_mutex_destroy(&data->mutex_prog_finish);
+	if (data->ready_mtx_lmeal)
+		pthread_mutex_destroy(&data->mutex_lmeal);
+	if (data->ready_mtx_lmsg)
+		pthread_mutex_destroy(&data->mutex_lmsg);
+	data->ready_mtx_data = 0;
+	data->ready_mtx_msg = 0;
+	data->ready_mtx_prog_finish = 0;
+	data->ready_mtx_lmeal = 0;
+	data->ready_mtx_lmsg = 0;
 }
 
 void	destroy_forks(t_philo_struct *data, int fork_pos)
@@ -42,6 +48,8 @@ void	destroy_forks(t_philo_struct *data, int fork_pos)
 
 void	clean_data(t_philo_struct *data, int pos)
 {
+	if (data->is_thrd_tracer)
+		pthread_join(data->death_tracer, NULL);
 	if (pos > 0)
 	{
 		while (--pos >= 0)

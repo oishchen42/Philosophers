@@ -6,7 +6,7 @@
 /*   By: oishchen <oishchen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 15:29:08 by oishchen          #+#    #+#             */
-/*   Updated: 2025/09/09 18:20:30 by oishchen         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:25:34 by oishchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 int	e_msg(t_philo *philo, char *msg, int exit_status)
 {
-	pthread_mutex_lock(&philo->data->msg_mutex);
-	philo->data->is_stop_exec = 1;
+	pthread_mutex_lock(&philo->data->mutex_msg);
+	pthread_mutex_lock(&philo->data->mutex_prog_finish);
+	philo->data->is_prog_finish = 1;
 	if (msg)
 		write(STDERR_FILENO, msg, ft_strlen(msg));
-	pthread_mutex_unlock(&philo->data->msg_mutex);
+	pthread_mutex_unlock(&philo->data->mutex_prog_finish);
+	pthread_mutex_unlock(&philo->data->mutex_msg);
 	return (exit_status);
 }
 
