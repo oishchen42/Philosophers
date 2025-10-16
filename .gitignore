@@ -1,0 +1,9 @@
+# Object files
+*.o
+
+# Executables
+philo/philo
+
+# Temporary files
+*~
+.DS_Store
